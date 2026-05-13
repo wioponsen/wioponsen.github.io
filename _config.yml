@@ -6,20 +6,20 @@ theme: jekyll-theme-chirpy
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
 # otherwise, the layout language will use the default value of 'en'.
-lang: en
-
+# lang: en
+lang: zh-CN
 # Change to your timezone › https://zones.arilyn.cc
-timezone:
+timezone:Asia/Shanghai
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
 title: Wioponsen's blog # the main title
 
-tagline: 记录我的日常学习 # it will display as the subtitle
+tagline: "记录我的日常学习" # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
-  随手记录日常，记录编程经验，记录学习.
+  A minimal, responsive and feature-rich Jekyll theme for technical writing.
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
