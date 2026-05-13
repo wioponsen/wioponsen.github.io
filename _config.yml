@@ -9,14 +9,14 @@ theme: jekyll-theme-chirpy
 # lang: en
 lang: zh-CN
 # Change to your timezone › https://zones.arilyn.cc
-timezone:Asia/Shanghai
+timezone: Asia/Shanghai
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Wioponsen's blog # the main title
+title: Wioponsen # the main title
 
-tagline: "记录我的日常学习" # it will display as the subtitle
+tagline: My daily blog" # it will display as the subtitle
 
 description: >- # used by seo meta and the atom feed
   A minimal, responsive and feature-rich Jekyll theme for technical writing.
@@ -99,7 +99,7 @@ theme_mode: # [light | dark]
 cdn:
 
 # the avatar on sidebar, support local or CORS resources
-avatar:https://avatars.githubusercontent.com/u/13818642?s=400&u=024e8fbb2715dcfc71ce0653de0944ab65ae9f1a&v=4
+avatar: https://avatars.githubusercontent.com/u/13818642?s=400&u=024e8fbb2715dcfc71ce0653de0944ab65ae9f1a&v=4
 
 # The URL of the site-wide social preview image used in SEO `og:image` meta tag.
 # It can be overridden by a customized `page.image` in front matter.
