@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'colmap+openMVS从多视角三维建模'
 date: 2025-11-25 07:13:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 
 COLMAP部分建图，将图片拷贝到 `文件夹/images` ,然后依次执行
 
@@ -136,3 +138,5 @@ if __name__ == '__main__':
 
 
 ```
+
+{% endraw %}

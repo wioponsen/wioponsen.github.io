@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'open3d读取ply和obj的差异'
 date: 2026-05-06 09:39:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 原创，转载注明出处：https://www.cnblogs.com/wioponsen/p/19981866
 
 如果发现open3d读取ply和obj，后续处理顶点，发现差异很大，可以试试进行如下操作：
@@ -33,3 +35,4 @@ mermaid: true
 ```
 print(len(mesh.vertices))
 ```
+{% endraw %}

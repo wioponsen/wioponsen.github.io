@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'pyproject.toml构建pypi发布包'
 date: 2024-03-14 02:34:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 ref:
 1.https://packaging.python.org/en/latest/tutorials/packaging-projects/
 2.https://packaging.python.org/en/latest/guides/writing-pyproject-toml/
@@ -90,3 +92,5 @@ python -m build
 # 上传仓库， 需要先在用户路径（不是工程路径）配置`.pypirc`文件，配置`local`的仓库路径（这里可以是pypi，testpypi）、账户和token，可以在pypi注册登录查询到
 twine upload -r local dist/*
 ```
+
+{% endraw %}

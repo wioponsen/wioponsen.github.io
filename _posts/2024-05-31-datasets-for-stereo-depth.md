@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'datasets for stereo depth'
 date: 2024-05-31 09:25:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 1. CRE dateset
 ```python
 # 0,1,2,3
@@ -131,3 +133,5 @@ def read_pfm(filename):
     return data, scale
 
 ```
+
+{% endraw %}

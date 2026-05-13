@@ -1,4 +1,5 @@
 ---
+layout: post
 title: '使用pybind11将C/C++代码封包在python中使用'
 date: 2026-04-29 03:37:00 +0000
 author: wioponsen
@@ -8,7 +9,8 @@ math: true
 mermaid: true
 ---
 
-内容原创，转载注明出处
+{% raw %}
+内容原创，转载注明出处：https://www.cnblogs.com/wioponsen/p/19949084
 
 ## 0 目标
 将自己的C/C++库构建成python能调用的包
@@ -277,3 +279,5 @@ python setup.py bdist_wheel
 ## 5 需要注意
 1. C/C++代码尽量使用标准结构作为函数的输入和输出，对应pybind11的stl; 需要使用矩阵等，尽量使用eigen库，对应pybind11的eigen
 2. 安装包的时候如果有dll依赖库等，需要注意是否安装到了 site-packages 目录，如果python安装在c盘，是有可能出现权限问题导致拷贝不成功，这时候就需要手动拷贝
+
+{% endraw %}

@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'image watch自定义'
 date: 2025-10-22 02:38:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 安装`image watch`模块除了可以查看OpenCV，也可以查看自定义的图像格式。
 
 可以参考的官方文档： https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2015/debugger/image-watch/image-watch-reference?view=vs-2015
@@ -179,3 +181,5 @@ c:\users\%USER_NAME%\appdata\local\microsoft\visualstudio\17.0_6e3f40f8\extensio
 C:\Users\%USER_NAME%\Documents\Visual Studio 2022\Visualizers
 ```
 即可支持自定义图像格式。
+
+{% endraw %}

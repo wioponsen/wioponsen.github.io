@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'project texture to image with disp'
 date: 2024-06-11 06:35:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 #### 视差投影推理
 
 >  已知相机视差图和其x方向某点的纹理图，求纹理投影到相机图的对应关系。
@@ -117,3 +119,4 @@ def read_process_once(left_path_name, texure_name):
 
 
 ```
+{% endraw %}

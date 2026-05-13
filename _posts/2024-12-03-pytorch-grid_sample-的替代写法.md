@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'pytorch grid_sample 的替代写法'
 date: 2024-12-03 09:16:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 ref:
 1. https://zenn.dev/pinto0309/scraps/7d4032067d0160
 2. https://github.com/ibaiGorordo/CREStereo-Pytorch/blob/b6c7a9fe8dc2e9e56ba7b96f4677312309282d15/nets/utils/utils.py#L35
@@ -228,3 +230,5 @@ def bilinear_grid_sample(im, grid, align_corners=False):
 
     return (Ia * wa + Ib * wb + Ic * wc + Id * wd).reshape(n, c, gh, gw)
 ```
+
+{% endraw %}

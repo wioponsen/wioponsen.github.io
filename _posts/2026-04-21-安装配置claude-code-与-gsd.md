@@ -1,4 +1,5 @@
 ---
+layout: post
 title: '安装配置claude code 与 GSD'
 date: 2026-04-21 09:38:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 refs:
 1. https://code.claude.com/docs/zh-CN/quickstart
 2. https://blog.csdn.net/2301_80863610/article/details/150963139
@@ -302,3 +304,4 @@ npm install -g @anthropic-ai/claude-code@latest
 claude update
 
 ```
+{% endraw %}

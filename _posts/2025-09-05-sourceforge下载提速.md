@@ -1,4 +1,5 @@
 ---
+layout: post
 title: 'sourceforge下载提速'
 date: 2025-09-05 03:24:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 从sourceforge正常下载，拷贝下载链接，将其中前面部分替换成：
 https://nchc.dl.sourceforge.net/project/
 开始下载，即可加速
@@ -27,3 +29,4 @@ ref:https://hugo.utermux.dev/default/sourceforge-endpoint/
 拉斯维加斯：versaweb.dl.sourceforge.net
 
 有些下载器（FDM、IDM等下载器）支持多个镜像加速，可以多填写几个镜像加速
+{% endraw %}

@@ -1,4 +1,5 @@
 ---
+layout: post
 title: '[android] 原生安卓系统wifi或移动网络叹号'
 date: 2025-02-12 03:02:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 先删除默认的验证地址：
 adb shell "settings delete global captive_portal_http_url"
 adb shell "settings delete global captive_portal_https_url"
@@ -25,3 +27,5 @@ adb shell "settings put global ntp_server ntp1.aliyun.com"
 https://www.celsoazevedo.com/files/android/google-camera
 
 ```
+
+{% endraw %}

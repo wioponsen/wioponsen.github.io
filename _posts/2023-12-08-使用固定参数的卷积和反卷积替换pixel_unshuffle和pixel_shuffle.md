@@ -1,4 +1,5 @@
 ---
+layout: post
 title: '使用固定参数的卷积和反卷积替换pixel_unshuffle和pixel_shuffle'
 date: 2023-12-08 07:48:00 +0000
 author: wioponsen
@@ -8,6 +9,7 @@ math: true
 mermaid: true
 ---
 
+{% raw %}
 pixel_unshuffle 和 pixel_shuffle 在导出ONNX的时候比较麻烦；
 由于该op需要操作内存， 可以减小运算量，所以用的很多，但是内存操作在设备端可能是低效的；
 而conv2d 和conv_transpose2d 在设备端的优化效率很高，往往会有更好性能
@@ -117,3 +119,4 @@ model_simp, check = simplify(model, perform_optimization=True, skipped_optimizer
 
 对于初始化同权重的tensor，目前测试， pytorch1.x直接导出onnx的时候是两个独立， 而在pytorch2.0中，会多一个identity将两个参数指向同一个
 onnx-sim默认也会复用参数，使用上述指令即可避免
+{% endraw %}
