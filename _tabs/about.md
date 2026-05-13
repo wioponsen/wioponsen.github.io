@@ -4,7 +4,6 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-## 关于我
 我是wio，主攻CV，画质增强，深度估计。
 
 ## 版权声明
