@@ -1,0 +1,49 @@
+---
+title: 'C++14连接路径'
+date: 2026-07-27 11:11:00 +0000
+author: wioponsen
+categories: [blog]
+tags: [blog]
+math: true
+mermaid: true
+---
+
+```C++
+
+template <typename... Args>
+std::string path_join(Args&&... args)
+{
+    std::string out;
+    bool first = true;
+
+    auto append = [&](std::string s)
+        {
+            for (char& c : s)
+                if (c == '\\') c = '/';
+
+            while (!s.empty() && s.back() == '/')
+                s.pop_back();
+
+            if (!first)
+            {
+                while (!s.empty() && s.front() == '/')
+                    s.erase(0, 1);
+            }
+            else
+            {
+                first = false;
+            }
+
+            if (s.empty()) return;
+
+            if (!out.empty() && out.back() != '/')
+                out += '/';
+
+            out += s;
+        };
+
+    (void)std::initializer_list<int>{(append(std::forward<Args>(args)), 0)...};
+    return out;
+}
+
+```
