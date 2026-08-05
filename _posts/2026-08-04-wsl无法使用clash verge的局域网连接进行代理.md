@@ -3,8 +3,8 @@ layout: post
 title: 'wsl无法使用clash verge的局域网连接进行代理'
 date: 2026-08-04 10:44:00 +0000
 author: wioponsen
-categories: [blogs]
-tags: [blogs]
+categories: [blog]
+tags: [blog]
 math: true
 mermaid: true
 ---
