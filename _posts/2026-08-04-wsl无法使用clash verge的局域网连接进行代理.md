@@ -18,16 +18,20 @@ win端：
 2. 确认端口， 一般是7890， 开启代理
 3. 防火墙放行
 
-```ps
-# 方法一：直接给 7890 端口放行（推荐）
+
+```shell
+ # 方法一：直接给 7890 端口放行（推荐）
 New-NetFirewallRule -DisplayName "Clash Verge WSL Proxy" -Direction Inbound -Protocol TCP -LocalPort 7890 -Action Allow
 
-# 方法二：更彻底——对 WSL 虚拟网卡禁用防火墙（很多人用这个立刻就通）
+ # 方法二：更彻底——对 WSL 虚拟网卡禁用防火墙（很多人用这个立刻就通）
 Set-NetFirewallProfile -DisabledInterfaceAliases "vEthernet (WSL)"
 ```
 
+
 wsl端，配置：
 在 `~/.bashrc` 中追加
+
+
 ```shell
 export HOST_IP=$(ip route | grep default | awk '{print $3}')
 PROXY_PORT=7890
@@ -52,7 +56,9 @@ function proxy_test(){
 ```
 
 
+
 然后 `source` 一下
+
 ```shell
 source ~/.bashrc
 ```
