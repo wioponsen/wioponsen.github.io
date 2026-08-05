@@ -61,6 +61,11 @@ function proxy_test(){
 
 ```shell
 source ~/.bashrc
+
+proxy_on
+proxy_test
+proxy_off
+
 ```
 
 测试排查：
