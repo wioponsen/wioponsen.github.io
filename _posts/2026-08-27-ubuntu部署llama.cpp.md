@@ -7,6 +7,7 @@ tags: [blog]
 math: true
 mermaid: true
 ---
+{% raw %}
 
 Step 1: Install Build Tools
 
@@ -83,5 +84,30 @@ sudo systemctl daemon-reload
 sudo systemctl start llama
 sudo systemctl enable llama
 ```
+
+Step 5: Install and configure LiteLLM to support Anthropic API
+
+```shell
+pip install litellm[proxy]
+```
+
+Create a configuration file named config.yaml to map llama.cpp as an Anthropic-compatible endpoint:
+```yaml
+model_list:
+  - model_name: DeepSeek-R1-Distill-Qwen-8B  # Map your local model to an Anthropic model name
+    litellm_params:
+      api_base: http://127.0.0     # Points to your llama.cpp server
+      api_key: "none"                         # llama.cpp doesn't require a key by default
+      custom_llm_provider: openai             # Tell LiteLLM that llama.cpp speaks OpenAI format
+```
+
+Run LiteLLM and tell it to accept Anthropic-formatted requests:
+```shell
+litellm --config config.yaml --port 8000
+```
+
+
+{% endraw %}
+
 
 
