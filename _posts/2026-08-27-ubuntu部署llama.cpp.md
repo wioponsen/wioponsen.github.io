@@ -46,8 +46,10 @@ Step 3: Run the Model using GPU Acceleration
     --host 0.0.0.0 \
     --port 8080 \
     --ctx-size 4096 \
-    -ngl 99
+    -ngl 99 \
 
+    --split-mode row \
+    --main-gpu 0 \
 
 ```
 --host 0.0.0.0: 允许局域网内的其他电脑（比如你的 Mac mini 或笔记本）访问这台 Ubuntu 服务器。
