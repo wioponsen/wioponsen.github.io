@@ -248,7 +248,7 @@ sudo systemctl enable ai-services.service
 sudo systemctl start ai-services.service
 ```
 
-## Step 6 others
+## Step 6: others
 多卡服务器，跑模型有两种情况：
 1. 模型参数小，每个卡都能跑完整示例
 2. 模型参数大，多张卡组合起来才能跑
