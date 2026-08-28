@@ -153,16 +153,19 @@ litellm --config config.yaml --port 4000
 
 #1. llama.cpp 配置
 LLAMA_CMD="/path/to/llama-server" # llama-server 或 ./llama-cli 的绝对路径
-MODEL_PATH="/path/to/your/model.gguf" # GGUF 模型文件的绝对路径
-LLAMA_PORT=8080
+MODEL_PATH="/path/to/qwen2.5-coder-7b-instruct-q6_k.gguf" # GGUF 模型文件的绝对路径
+MODEL_ALIAS="qwen2.5-coder-7b"
+LLAMA_PORT=8082
+CONTENT_LENGTH=4096
+LITE_LLAMA_PORT=4000
 
 # 2. LiteLLM 配置
-LITELLM_DIR="/path/to/your/litellm-project" # 包含 .env 和 config.yaml 的目录绝对路径
+LITELLM_DIR="/home/w/works/llama/" # 包含 .env 和 config.yaml 的目录绝对路径
 # ============================================
 
 echo "[1/3] 正在启动 llama.cpp..."
 # 后台启动 llama.cpp 并将日志保存到指定文件
-$LLAMA_CMD -m $MODEL_PATH --port $LLAMA_PORT > ~/llama_server.log 2>&1 &
+$LLAMA_CMD -m $MODEL_PATH --host 0.0.0.0 --port $LLAMA_PORT --alias $MODEL_ALIAS --ctx-size $CONTENT_LENGTH -ngl 99 > ~/llama_server.log 2>&1 &
 LLAMA_PID=$!
 
 echo "[2/3] 等待 llama.cpp 端口 ($LLAMA_PORT) 就绪..."
@@ -177,7 +180,7 @@ echo "[3/3] 正在启动 LiteLLM Proxy..."
 cd $LITELLM_DIR
 
 # 启动 LiteLLM（如果是 pip 安装的使用下面这行）
-litellm --config config.yaml > ~/litellm_proxy.log 2>&1 &
+litellm --config config.yaml --port $LITE_LLAMA_PORT > ~/litellm_proxy.log 2>&1 &
 
 # 如果你是用 Docker Compose 启动 LiteLLM，请注释掉上面那行，改用下面这行：
 # docker-compose up -d
@@ -185,12 +188,7 @@ litellm --config config.yaml > ~/litellm_proxy.log 2>&1 &
 echo "LiteLLM 已在后台启动！"
 echo "你可以通过 'tail -f ~/litellm_proxy.log' 查看 LiteLLM 日志。"
 echo "你可以通过 'tail -f ~/llama_server.log' 查看 llama.cpp 日志。"
-```
 
-创建服务
-```shell
-sudo nano /etc/systemd/system/ai-services.service
-```
 
 写入：
 ```ini
@@ -203,7 +201,7 @@ Type=forking
 # 替换为你的实际 Linux 用户名
 User=your_username 
 # 换成你刚才创建的脚本的绝对路径
-ExecStart=/home/your_username/start_ai.sh
+ExecStart=/home/your_username/run_llama.sh
 # 如果服务崩溃，自动重启
 Restart=on-failure
 # 给予脚本足够的时间运行（特别是加载大模型时）
