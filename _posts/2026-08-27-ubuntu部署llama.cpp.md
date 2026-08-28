@@ -9,7 +9,7 @@ mermaid: true
 ---
 {% raw %}
 
-Step 1: Install Build Tools
+## Step 1: Install Build Tools
 
 ```shell
 sudo apt update && sudo apt upgrade -y
@@ -30,7 +30,7 @@ sudo apt autoremove -y
 
 ```
 
-Step 2: Clone and Compile with CUDA
+## Step 2: Clone and Compile with CUDA
 
 ```shell
 # 1. Clone the repository
@@ -45,7 +45,7 @@ cmake --build build --config Release -j $(nproc)
 
 ```
 
-Step 3: Run the Model using GPU Acceleration
+## Step 3: Run the Model using GPU Acceleration
 
 ```shell
 
@@ -76,38 +76,7 @@ Step 3: Run the Model using GPU Acceleration
 curl ip:port/v1/models
 ```
 
-Step 4: systemd demae （可选）
-
-```shell
-sudo nano /etc/systemd/system/llama.service
-```
-
-写入：
-```ini
-[Unit]
-Description=Llama.cpp API Server
-After=network.target
-
-[Service]
-Type=simple
-User=your_username
-WorkingDirectory=/home/your_username/llama.cpp
-ExecStart=/home/your_username/llama.cpp/build/bin/llama-server -m /home/your_username/llama.cpp/models/DeepSeek-R1-Distill-Qwen-8B-Q4_K_M.gguf --host 0.0.0.0 --port 8080 -ngl 99
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-
-```
-
-启动并设置开机自启：
-```shell
-sudo systemctl daemon-reload
-sudo systemctl start llama
-sudo systemctl enable llama
-```
-
-Step 5: Install and configure LiteLLM to support Anthropic API
+## Step 4: Install and configure LiteLLM to support Anthropic API
 
 ```shell
 pip install litellm[proxy]
@@ -174,6 +143,85 @@ litellm --config config.yaml --port 4000
 ```
 
 至此，就可以在浏览器ui进行控制, 进入 http://{ip}:4000/ui/ , 就能生成token，选择model
+
+
+## Step 5: One-Click Start Script
+
+编写脚本启动服务：run_llama.sh
+```sh
+#!/bin/bash
+
+#1. llama.cpp 配置
+LLAMA_CMD="/path/to/llama-server" # llama-server 或 ./llama-cli 的绝对路径
+MODEL_PATH="/path/to/your/model.gguf" # GGUF 模型文件的绝对路径
+LLAMA_PORT=8080
+
+# 2. LiteLLM 配置
+LITELLM_DIR="/path/to/your/litellm-project" # 包含 .env 和 config.yaml 的目录绝对路径
+# ============================================
+
+echo "[1/3] 正在启动 llama.cpp..."
+# 后台启动 llama.cpp 并将日志保存到指定文件
+$LLAMA_CMD -m $MODEL_PATH --port $LLAMA_PORT > ~/llama_server.log 2>&1 &
+LLAMA_PID=$!
+
+echo "[2/3] 等待 llama.cpp 端口 ($LLAMA_PORT) 就绪..."
+# 循环检测端口，直到 llama.cpp 彻底启动成功
+while ! nc -z localhost $LLAMA_PORT; do   
+  sleep 1
+done
+echo "llama.cpp 已成功就绪 (PID: $LLAMA_PID)！"
+
+echo "[3/3] 正在启动 LiteLLM Proxy..."
+# 进入 LiteLLM 所在目录（确保能读到 .env 和 config.yaml）
+cd $LITELLM_DIR
+
+# 启动 LiteLLM（如果是 pip 安装的使用下面这行）
+litellm --config config.yaml > ~/litellm_proxy.log 2>&1 &
+
+# 如果你是用 Docker Compose 启动 LiteLLM，请注释掉上面那行，改用下面这行：
+# docker-compose up -d
+
+echo "LiteLLM 已在后台启动！"
+echo "你可以通过 'tail -f ~/litellm_proxy.log' 查看 LiteLLM 日志。"
+echo "你可以通过 'tail -f ~/llama_server.log' 查看 llama.cpp 日志。"
+```
+
+创建服务
+```shell
+sudo nano /etc/systemd/system/ai-services.service
+```
+
+写入：
+```ini
+[Unit]
+Description=Llama.cpp and LiteLLM Auto Start Service
+After=network.target
+
+[Service]
+Type=forking
+# 替换为你的实际 Linux 用户名
+User=your_username 
+# 换成你刚才创建的脚本的绝对路径
+ExecStart=/home/your_username/start_ai.sh
+# 如果服务崩溃，自动重启
+Restart=on-failure
+# 给予脚本足够的时间运行（特别是加载大模型时）
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target
+```
+
+启动并设置开机自启：
+```shell
+# 1. 重新加载 Systemd 配置
+sudo systemctl daemon-reload
+# 2. 启用开机自启
+sudo systemctl enable ai-services.service
+# 3. 立即手动启动测试
+sudo systemctl start ai-services.service
+```
 
 
 {% endraw %}
