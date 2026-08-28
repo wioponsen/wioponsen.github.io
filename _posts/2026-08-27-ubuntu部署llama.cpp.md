@@ -215,7 +215,7 @@ litellm --config config.yaml --port $LITE_LLAMA_PORT > ~/litellm_proxy.log 2>&1 
 echo "LiteLLM 已在后台启动！"
 echo "你可以通过 'tail -f ~/litellm_proxy.log' 查看 LiteLLM 日志。"
 echo "你可以通过 'tail -f ~/llama_server.log' 查看 llama.cpp 日志。"
-
+```
 
 写入：
 ```ini
