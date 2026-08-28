@@ -58,16 +58,22 @@ Step 3: Run the Model using GPU Acceleration
 ./build/bin/llama-server -m models/DeepSeek-R1-Distill-Qwen-8B-Q4_K_M.gguf \
     --host 0.0.0.0 \
     --port 8080 \
+    --alias deepseek-r1 \
     --ctx-size 4096 \
     -ngl 99 \
 
     --split-mode row \
-    --main-gpu 0 \
-
+    --main-gpu 0  
 ```
 --host 0.0.0.0: 允许局域网内的其他电脑（比如你的 Mac mini 或笔记本）访问这台 Ubuntu 服务器。
 --ctx-size 4096: 设置模型的上下文窗口大小。
+--alias deepseek-r1: 设置模型别名， 后续id和名称都可以使用这个别名
 启动后，该服务会完全兼容 OpenAI 的 API 格式，接口地址为 http://你的Ubuntu_IP:8080/v1。
+
+获取模型列表信息, 里面有id信息
+```shell
+curl ip:port/v1/models
+```
 
 Step 4: systemd demae
 
