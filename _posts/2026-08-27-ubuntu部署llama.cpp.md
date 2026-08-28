@@ -21,6 +21,8 @@ sudo apt-get update
 sudo apt-get -y install cuda-toolkit-12-6
 
 sudo apt install -y libssl-dev
+# 多卡装nccl
+sudo apt install -y libnccl2 libnccl-dev
 
 # 如果有环境错误， 就删除旧的，有错误的，重新装toolkit
 sudo apt purge -y nvidia-cuda-toolkit
