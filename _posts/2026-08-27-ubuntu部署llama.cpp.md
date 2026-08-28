@@ -248,6 +248,90 @@ sudo systemctl enable ai-services.service
 sudo systemctl start ai-services.service
 ```
 
+## Step 6 others
+多卡服务器，跑模型有两种情况：
+1. 模型参数小，每个卡都能跑完整示例
+2. 模型参数大，多张卡组合起来才能跑
+
+*单卡装不下的大模型：*
+ 模型切分到多卡， 使用1个 llama-server 实例，使用参数 `--split-mode layer`， 并发小
+ *每卡一份完整模型：*
+ 每张卡一个 llama-server，不同端口，每张卡一个独立的 llama.cpp 实例 + LiteLLM 做负载均衡
+
+以四张卡，每张卡单独运行一份模型为例：
+
+1. 每张卡起一个 llama.cpp 实例
+```shell
+# GPU 0 → 端口 8080
+CUDA_VISIBLE_DEVICES=0 llama-server \
+  -m /path/to/model.gguf \
+  -ngl 99 \
+  -c 8192 \
+  --parallel 4 \
+  --host 0.0.0.0 --port 8080 \
+  --alias qwen2.5-coder-7b
+
+# GPU 1 → 8081
+CUDA_VISIBLE_DEVICES=1 llama-server \
+  -m /path/to/model.gguf \
+  -ngl 99 -c 8192 --parallel 4 \
+  --host 0.0.0.0 --port 8081 \
+  --alias qwen2.5-coder-7b
+
+# GPU 2 → 8082
+CUDA_VISIBLE_DEVICES=2 llama-server ... --port 8082 ...
+
+# GPU 3 → 8083
+CUDA_VISIBLE_DEVICES=3 llama-server ... --port 8083 ...
+```
+
+- CUDA_VISIBLE_DEVICES=N：把进程绑到第 N 张卡  
+- --parallel 4（或 -np 4）：单实例同时处理的会话数（slot）；越大越占显存（主要是 KV cache）  
+- -c：总上下文，会在多个 slot 之间分；例如 -c 32768 --parallel 4 ≈ 每路约 8k
+
+2. 用 LiteLLM 统一成一个模型名（负载均衡）
+
+config.yaml
+```shell
+model_list:
+  # 同一个 model_name，多个 api_base → 自动负载均衡
+  - model_name: qwen2.5-coder-7b
+    litellm_params:
+      model: openai/qwen2.5-coder-7b
+      api_base: http://127.0.0.1:8080/v1
+      api_key: "none"
+      rpm: 60          # 可选，用于加权调度
+
+  - model_name: qwen2.5-coder-7b
+    litellm_params:
+      model: openai/qwen2.5-coder-7b
+      api_base: http://127.0.0.1:8081/v1
+      api_key: "none"
+      rpm: 60
+
+  - model_name: qwen2.5-coder-7b
+    litellm_params:
+      model: openai/qwen2.5-coder-7b
+      api_base: http://127.0.0.1:8082/v1
+      api_key: "none"
+      rpm: 60
+
+  - model_name: qwen2.5-coder-7b
+    litellm_params:
+      model: openai/qwen2.5-coder-7b
+      api_base: http://127.0.0.1:8083/v1
+      api_key: "none"
+      rpm: 60
+
+router_settings:
+  routing_strategy: least-busy   # 或 simple-shuffle
+  # least-busy：优先发给当前在途请求少的实例，适合并发
+  # simple-shuffle：随机/加权，简单好用
+
+general_settings:
+  master_key: sk-你的主密钥
+```
+
 
 {% endraw %}
 
