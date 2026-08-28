@@ -118,7 +118,7 @@ model_list:
   - model_name: qwen2.5-coder-7b
     litellm_params:
       model: openai/qwen2.5-coder-7b
-      api_base: http://0.0.0.0:8082/v1
+      api_base: http://0.0.0.0:8080/v1
       api_key: "none"
       custom_llm_provider: openai
 
@@ -134,6 +134,33 @@ general_settings:
 UI_USERNAME=admin
 UI_PASSWORD=pswd
 LITELLM_MASTER_KEY=sk-1234
+```
+
+如果有多个模型需要支持，或者有其他厂商的模型需要统一中转，可以继续增加模型配置，而且可以设置fallback（失败自动切换）规则
+```yaml
+model_list:
+  - model_name: claude-sonnet
+    litellm_params:
+      model: anthropic/claude-sonnet-4-5
+      api_key: os.environ/ANTHROPIC_API_KEY
+
+  - model_name: qwen2.5-coder-7b
+    litellm_params:
+      model: openai/qwen2.5-coder-7b
+      api_base: http://127.0.0.1:8080/v1
+      api_key: "none"
+
+# 方式 A：写在 litellm_settings
+litellm_settings:
+  num_retries: 2                    # 每个模型先重试几次
+  request_timeout: 60               # 超时秒数
+  fallbacks:
+    - claude-sonnet: ["qwen2.5-coder-7b"]   # Claude 挂了 → 本地 qwen
+
+# 或方式 B：写在 router_settings（效果类似）
+#router_settings:
+#  fallbacks:
+#    - claude-sonnet: ["qwen2.5-coder-7b"]
 ```
 
 
