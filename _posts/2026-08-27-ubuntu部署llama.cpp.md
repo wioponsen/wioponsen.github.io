@@ -155,7 +155,7 @@ litellm_settings:
   num_retries: 2                    # 每个模型先重试几次
   request_timeout: 60               # 超时秒数
   fallbacks:
-    - claude-sonnet: ["qwen2.5-coder-7b"]   # Claude 挂了 → 本地 qwen
+    - claude-sonnet: ["qwen2.5-coder-7b"]   # Claude 挂了 → 本地 qwen, 允许多级fallback，可以在中括号中逐个顺序填写
 
 # 或方式 B：写在 router_settings（效果类似）
 #router_settings:
