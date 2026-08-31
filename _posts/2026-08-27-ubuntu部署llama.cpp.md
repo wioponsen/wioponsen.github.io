@@ -183,13 +183,67 @@ litellm --config config.yaml --port 4000
 LLAMA_CMD="/home/w/works/llama/llama.cpp/build/bin/llama-server" # llama-server 或 ./llama-cli 的绝对路径
 MODEL_PATH="/home/w/works/llama/qwen2.5-coder-7b-instruct-q6_k.gguf" # GGUF 模型文件的绝对路径
 MODEL_ALIAS="qwen2.5-coder-7b"
-LLAMA_PORT=8080
-CONTENT_LENGTH=4096
+LLAMA_PORT=8082
+CONTENT_LENGTH=32768
 LITE_LLAMA_PORT=4000
 
 # 2. LiteLLM 配置
 LITELLM_DIR="/home/w/works/llama/" # 包含 .env 和 config.yaml 的目录绝对路径
 # ============================================
+
+# 初始化 PID 变量（防空值）
+LLAMA_PID=0
+LITELLM_PID=0
+
+# 安全退出清理函数
+cleanup() {
+    echo -e "\n[!] 捕获到退出信号，正在安全关闭所有 AI 服务..."
+    
+    # 1. 杀死 LiteLLM
+    if [ $LITELLM_PID -ne 0 ] && kill -0 $LITELLM_PID 2>/dev/null; then
+        echo "正在停止 LiteLLM Proxy (PID: $LITELLM_PID)..."
+        kill -TERM $LITELLM_PID
+    fi
+
+    # 2. 杀死 llama.cpp
+    if [ $LLAMA_PID -ne 0 ] && kill -0 $LLAMA_PID 2>/dev/null; then
+        echo "正在停止 llama.cpp Server (PID: $LLAMA_PID)..."
+        kill -TERM $LLAMA_PID
+    fi
+
+    # 3. 等待所有后台进程彻底退出
+    wait 2>/dev/null
+    echo "[✓] 所有服务已安全退出，端口已释放！"
+    exit 0
+}
+
+# 注册信号捕获
+# 当按下 Ctrl+C (SIGINT) 或 执行 kill (SIGTERM) 时，自动调用 cleanup
+trap cleanup SIGINT SIGTERM
+# ============================================
+
+# 端口占用检测函数
+check_port() {
+    local port=$1
+    local name=$2
+    # 使用 lsof 或 netstat 检测端口，提取占用该端口的进程信息
+    if nc -z localhost $port 2>/dev/null; then
+        echo "❌ 错误: $name 所需的端口 $port 已被占用！"
+        # 尝试找出占用端口的 PID 和进程名（如果用户有权限查看）
+        local pid_info=$(lsof -t -i:$port 2>/dev/null)
+        if [ ! -z "$pid_info" ]; then
+            echo "   👉 占用进程 PID: $pid_info"
+        fi
+        echo "   请先关闭冲突进程或修改脚本中的端口配置。"
+        exit 1
+    fi
+}
+# ============================================
+
+echo "[0/3] 正在进行启动前环境检测..."
+check_port $LLAMA_PORT "llama.cpp"
+check_port $LITE_LLAMA_PORT "LiteLLM Proxy"
+echo "      端口检查通过，未发现冲突。"
 
 echo "[1/3] 正在启动 llama.cpp..."
 # 后台启动 llama.cpp 并将日志保存到指定文件
@@ -201,7 +255,7 @@ echo "[2/3] 等待 llama.cpp 端口 ($LLAMA_PORT) 就绪..."
 while ! nc -z localhost $LLAMA_PORT; do   
   sleep 1
 done
-echo "llama.cpp 已成功就绪 (PID: $LLAMA_PID)！"
+echo "      llama.cpp 已成功就绪 (PID: $LLAMA_PID)！"
 
 echo "[3/3] 正在启动 LiteLLM Proxy..."
 # 进入 LiteLLM 所在目录（确保能读到 .env 和 config.yaml）
@@ -210,13 +264,20 @@ cd $LITELLM_DIR
 # 启动 LiteLLM（如果是 pip 安装的使用下面这行）
 litellm --config config.yaml --port $LITE_LLAMA_PORT > ~/litellm_proxy.log 2>&1 &
 LITELLM_PID=$!
-echo "litellm 已成功就绪 (PID: $LITELLM_PID)！"
+echo "      litellm 已成功就绪 (PID: $LITELLM_PID)！"
 # 如果你是用 Docker Compose 启动 LiteLLM，请注释掉上面那行，改用下面这行：
 # docker-compose up -d
 
-echo "LiteLLM 已在后台启动！"
-echo "你可以通过 'tail -f ~/litellm_proxy.log' 查看 LiteLLM 日志。"
-echo "你可以通过 'tail -f ~/llama_server.log' 查看 llama.cpp 日志。"
+echo "----------------------------------------------"
+echo "LiteLLM 已在后台运行！"
+echo "    llama.cpp 日志已更新: '~/llama_server.log'  "
+echo "    LiteLLM   日志已更新: '~/litellm_proxy.log' "
+
+
+# 【核心】保持脚本前台运行，等待并堵塞进程
+echo "使用 Ctrl + C 退出本地AI服务， Waiting... "
+wait $LITELLM_PID $LLAMA_PID
+#wait $LITELLM_PID $LLAMA_PID 2>/dev/null || true
 ```
 
 写入：
