@@ -123,7 +123,7 @@ model_list:
       custom_llm_provider: openai
 
 general_settings:
-  master_key: "os.environ/LITELLM_MASTER_KEY"
+  master_key: "sk-1234"
   database_url: "postgresql://{user}:{pswd}@localhost:5432/litellm"
   store_model_in_db: true
 ```
@@ -179,10 +179,10 @@ litellm --config config.yaml --port 4000
 #!/bin/bash
 
 #1. llama.cpp 配置
-LLAMA_CMD="/path/to/llama-server" # llama-server 或 ./llama-cli 的绝对路径
-MODEL_PATH="/path/to/qwen2.5-coder-7b-instruct-q6_k.gguf" # GGUF 模型文件的绝对路径
+LLAMA_CMD="/home/w/works/llama/llama.cpp/build/bin/llama-server" # llama-server 或 ./llama-cli 的绝对路径
+MODEL_PATH="/home/w/works/llama/qwen2.5-coder-7b-instruct-q6_k.gguf" # GGUF 模型文件的绝对路径
 MODEL_ALIAS="qwen2.5-coder-7b"
-LLAMA_PORT=8082
+LLAMA_PORT=8080
 CONTENT_LENGTH=4096
 LITE_LLAMA_PORT=4000
 
@@ -208,13 +208,15 @@ cd $LITELLM_DIR
 
 # 启动 LiteLLM（如果是 pip 安装的使用下面这行）
 litellm --config config.yaml --port $LITE_LLAMA_PORT > ~/litellm_proxy.log 2>&1 &
-
+LITELLM_PID=$!
+echo "litellm 已成功就绪 (PID: $LITELLM_PID)！"
 # 如果你是用 Docker Compose 启动 LiteLLM，请注释掉上面那行，改用下面这行：
 # docker-compose up -d
 
 echo "LiteLLM 已在后台启动！"
 echo "你可以通过 'tail -f ~/litellm_proxy.log' 查看 LiteLLM 日志。"
 echo "你可以通过 'tail -f ~/llama_server.log' 查看 llama.cpp 日志。"
+
 ```
 
 写入：
