@@ -175,6 +175,7 @@ litellm --config config.yaml --port 4000
 ## Step 5: One-Click Start Script
 
 编写脚本启动服务：run_llama.sh
+
 ```sh
 #!/bin/bash
 
@@ -216,10 +217,10 @@ echo "litellm 已成功就绪 (PID: $LITELLM_PID)！"
 echo "LiteLLM 已在后台启动！"
 echo "你可以通过 'tail -f ~/litellm_proxy.log' 查看 LiteLLM 日志。"
 echo "你可以通过 'tail -f ~/llama_server.log' 查看 llama.cpp 日志。"
-
 ```
 
 写入：
+
 ```ini
 [Unit]
 Description=Llama.cpp and LiteLLM Auto Start Service
@@ -241,6 +242,7 @@ WantedBy=multi-user.target
 ```
 
 启动并设置开机自启：
+
 ```shell
 # 1. 重新加载 Systemd 配置
 sudo systemctl daemon-reload
@@ -263,6 +265,7 @@ sudo systemctl start ai-services.service
 以四张卡，每张卡单独运行一份模型为例：
 
 1. 每张卡起一个 llama.cpp 实例
+
 ```shell
 # GPU 0 → 端口 8080
 CUDA_VISIBLE_DEVICES=0 llama-server \
@@ -294,6 +297,7 @@ CUDA_VISIBLE_DEVICES=3 llama-server ... --port 8083 ...
 2. 用 LiteLLM 统一成一个模型名（负载均衡）
 
 config.yaml
+
 ```shell
 model_list:
   # 同一个 model_name，多个 api_base → 自动负载均衡
