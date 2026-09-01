@@ -1,5 +1,5 @@
 ---
-title: 'ubuntu部署llama.cpp'
+title: 'ubuntu部署llama.cpp+LiteLLM'
 date: 2026-08-27 14:11:00 +0000
 author: wioponsen
 categories: [blog]
@@ -15,10 +15,13 @@ mermaid: true
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential cmake git wget python3-pip
 
+# install cuda-toolkit in wsl 
 wget https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-keyring_1.1-1_all.deb
 sudo dpkg -i cuda-keyring_1.1-1_all.deb
 sudo apt-get update
 sudo apt-get -y install cuda-toolkit-12-6
+# install cuda-toolkit in ubuntu 
+
 
 sudo apt install -y libssl-dev
 # 多卡装nccl
@@ -399,6 +402,7 @@ general_settings:
   master_key: sk-你的主密钥
 ```
 
+多个不同的模型也可以使用同一个 model_name 名字，然后配置order确认优先级，如order=1, order=2
 
 {% endraw %}
 
