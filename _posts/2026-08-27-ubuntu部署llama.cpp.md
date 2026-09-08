@@ -3,7 +3,7 @@ title: 'ubuntu部署llama.cpp+LiteLLM'
 date: 2026-08-27 14:11:00 +0000
 author: wioponsen
 categories: [blog]
-tags: [blog]
+tags: [llama,LLM]
 math: true
 mermaid: true
 ---
