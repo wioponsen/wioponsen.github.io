@@ -69,7 +69,7 @@ cmake --build build --config Release -j $(nproc)
     --split-mode row \
     --main-gpu 0 \
 
-    -ctk q8_0 -ctv q4_0 -fa
+    -fa on
 ```
 --host 0.0.0.0: 允许局域网内的其他电脑（比如你的 Mac mini 或笔记本）访问这台 Ubuntu 服务器。
 
@@ -81,7 +81,7 @@ cmake --build build --config Release -j $(nproc)
 
 -fa (开启 Flash Attention)不损失精度的前提下，大幅降低长上下文时的显存占用，并成倍提升长文本下的首字响应速度
 
--ctk q8_0 与 -ctv q4_0 (KV Cache 混合量化)将键（Key）缓存量化为 8-bit，值（Value）缓存量化为 4-bit; 不加这两个参数，默认的 FP16 KV Cache显存较大
+//-ctk q8_0 与 -ctv q4_0 (KV Cache 混合量化)将键（Key）缓存量化为 8-bit，值（Value）缓存量化为 4-bit; 不加这两个参数，默认的 FP16 KV Cache显存较大
 
 //-grp (开启 Grouped-Query Attention 优化 / 连续批处理)优化多轮对话和并发推理时的显存复用。当你在编辑器里频繁修改代码、连续向 AI 发问时，该参数可以避免每次都重新读入前面的整段代码，让多轮对话的响应变得极其丝滑。
 
