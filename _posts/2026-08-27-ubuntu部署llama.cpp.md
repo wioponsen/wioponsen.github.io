@@ -267,7 +267,7 @@ echo "      端口检查通过，未发现冲突。"
 
 echo "[1/3] 正在启动 llama.cpp..."
 # 后台启动 llama.cpp 并将日志保存到指定文件
-$LLAMA_CMD -m $MODEL_PATH --host 0.0.0.0 --port $LLAMA_PORT --alias $MODEL_ALIAS --ctx-size $CONTENT_LENGTH -ngl 99 > ~/llama_server.log 2>&1 &
+# $LLAMA_CMD -m $MODEL_PATH --host 0.0.0.0 --port $LLAMA_PORT --alias $MODEL_ALIAS --ctx-size $CONTENT_LENGTH -ngl 99 > ~/llama_server.log 2>&1 &
 $LLAMA_CMD -m $MODEL_PATH --host 0.0.0.0 --port $LLAMA_PORT --alias $MODEL_ALIAS --ctx-size $CONTENT_LENGTH -ngl auto -fa on -np $NPARALLEL > ~/llama_server.log 2>&1 &
 LLAMA_PID=$!
 
