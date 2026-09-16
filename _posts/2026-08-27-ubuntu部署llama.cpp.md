@@ -71,6 +71,9 @@ cmake --build build --config Release -j $(nproc)
 
     -fa on
 ```
+
+参数可以参考： https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
+
 --host 0.0.0.0: 允许局域网内的其他电脑（比如你的 Mac mini 或笔记本）访问这台 Ubuntu 服务器。
 
 --ctx-size 4096: 设置模型的上下文窗口大小。
@@ -202,6 +205,7 @@ MODEL_ALIAS="qwen2.5-coder-7b"
 LLAMA_PORT=8082
 CONTENT_LENGTH=32768
 LITE_LLAMA_PORT=4000
+NPARALLEL=1
 
 # 2. LiteLLM 配置
 LITELLM_DIR="/home/w/works/llama/" # 包含 .env 和 config.yaml 的目录绝对路径
@@ -264,6 +268,7 @@ echo "      端口检查通过，未发现冲突。"
 echo "[1/3] 正在启动 llama.cpp..."
 # 后台启动 llama.cpp 并将日志保存到指定文件
 $LLAMA_CMD -m $MODEL_PATH --host 0.0.0.0 --port $LLAMA_PORT --alias $MODEL_ALIAS --ctx-size $CONTENT_LENGTH -ngl 99 > ~/llama_server.log 2>&1 &
+$LLAMA_CMD -m $MODEL_PATH --host 0.0.0.0 --port $LLAMA_PORT --alias $MODEL_ALIAS --ctx-size $CONTENT_LENGTH -ngl auto -fa on -np $NPARALLEL > ~/llama_server.log 2>&1 &
 LLAMA_PID=$!
 
 echo "[2/3] 等待 llama.cpp 端口 ($LLAMA_PORT) 就绪..."
