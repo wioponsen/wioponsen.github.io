@@ -88,6 +88,16 @@ cmake --build build --config Release -j $(nproc)
 
 //-grp (开启 Grouped-Query Attention 优化 / 连续批处理)优化多轮对话和并发推理时的显存复用。当你在编辑器里频繁修改代码、连续向 AI 发问时，该参数可以避免每次都重新读入前面的整段代码，让多轮对话的响应变得极其丝滑。
 
+--chat-template-kwargs '{"enable_thinking":false}'  : 可以开关gemma模型的思维链，加速输出
+
+--chat-template-kwargs '{"reasoning_effort":"low"}'  ： 可以设置qwen模型的思维链长度，xhigh （默认，最长）, medium , low； 可以加"enable_thinking":false，直接关闭思维；也可以加字段 "thinking_budget": 2000，控制思考长度
+
+--jinja 的作用是：启用 Jinja 模板引擎来正确解析和应用模型的聊天模板（Chat Template），前面chat-template-kwargs启用的时候，需要jinja
+
+--temp 0.1 设置温度
+
+--top-k 20 
+
 启动后，该服务会完全兼容 OpenAI 的 API 格式，接口地址为 http://你的Ubuntu_IP:8080/v1。
 
 获取模型列表信息, 里面有id信息
@@ -421,6 +431,48 @@ general_settings:
 ```
 
 多个不同的模型也可以使用同一个 model_name 名字，然后配置order确认优先级，如order=1, order=2
+
+## Step 7: fix
+1. prisma 没有生成
+```shell
+# 一般在 site-packages/litellm/proxy/schema.prisma
+LOCAL_SCHEMA=/your/path/to/site-packages/litellm/proxy/schema.prisma
+# 运行：
+prisma generate --schema $LOCAL_SCHEMA
+```
+
+2. 控制思维链，加速运行
+```ini
+#gemma
+--chat-template-kwargs '{"enable_thinking":false}' --jinja
+
+#qwen, xhigh medium, low
+--chat-template-kwargs '{"enable_thinking":true,"reasoning_effort":"low","preserve_thinking":false}' --jinja
+#preserve_thinking 多轮保留历史思考，关闭可以节省上下文
+
+```
+这些也可以写在 config.yaml里，如
+```yaml
+model_list:
+  - model_name: qwen38
+    litellm_params:
+      model: openai/qwen3.8-27b
+      api_base: http://localhost:8080/v1
+      # 默认低思考
+      extra_body:
+        chat_template_kwargs:
+          enable_thinking: true
+          reasoning_effort: low
+          preserve_thinking: false
+
+  - model_name: gemma4
+    litellm_params:
+      model: openai/gemma4-26b
+      api_base: http://localhost:8081/v1
+      extra_body:
+        chat_template_kwargs:
+          enable_thinking: false
+```
 
 {% endraw %}
 
