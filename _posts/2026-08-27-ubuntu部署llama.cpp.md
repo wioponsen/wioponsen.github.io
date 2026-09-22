@@ -41,7 +41,8 @@ git clone https://github.com/ggml-org/llama.cpp.git
 cd llama.cpp
 
 # 2. Configure the build with CUDA enabled
-cmake -B build -DGGML_CUDA=ON -DGGML_CUDA_F16=ON
+cmake -B build -DGGML_CUDA=ON
+# cmake -B build -DGGML_CUDA=ON -DGGML_CUDA_F16=ON
 
 # 3. Compile using all available CPU cores
 cmake --build build --config Release -j $(nproc)
