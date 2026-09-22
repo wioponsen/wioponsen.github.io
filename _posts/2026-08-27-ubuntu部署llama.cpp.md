@@ -70,6 +70,20 @@ cmake --build build --config Release -j $(nproc)
     --main-gpu 0 \
 
     -fa on
+
+./build/bin/llama-server \
+  -m Qwen3.8-27B-UD-Q4_K_XL.gguf \
+  --host 0.0.0.0 \
+  --port 8080 \
+  --alias Qwen3.8-27B \
+  -ngl 99 \
+  -c 131072 \
+  -fa on \
+  --cache-type-k q8_0 --cache-type-v q8_0 \
+  --spec-type draft-mtp \
+  --spec-draft-n-max 4 \
+  --jinja \
+  --parallel 1
 ```
 
 参数可以参考： https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md
@@ -85,6 +99,8 @@ cmake --build build --config Release -j $(nproc)
 -fa (开启 Flash Attention)不损失精度的前提下，大幅降低长上下文时的显存占用，并成倍提升长文本下的首字响应速度
 
 --spec-type draft-mtp 开启MTP，多token预测，加速
+
+--spec-draft-n-max 4 每次多预测token数
 
 //-ctk q8_0 与 -ctv q4_0 (KV Cache 混合量化)将键（Key）缓存量化为 8-bit，值（Value）缓存量化为 4-bit; 不加这两个参数，默认的 FP16 KV Cache显存较大
 
